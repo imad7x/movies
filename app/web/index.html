@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Movies</title>
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f6f5f2" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f1012" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="icon.svg?v=1" type="image/svg+xml">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="style.css?v=3">
+<script src="app.js?v=4" defer></script>
+</head>
+<body>
+<svg width="0" height="0" class="sprite" aria-hidden="true">
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5Z" class="fill"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="m12 3.5 2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.8Z" class="fill"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+  <symbol id="i-gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.4M12 18.8v2.4M2.8 12h2.4M18.8 12h2.4M5.5 5.5l1.7 1.7M16.8 16.8l1.7 1.7M5.5 18.5l1.7-1.7M16.8 7.2l1.7-1.7"/></symbol>
+  <symbol id="i-heart" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.3a4.3 4.3 0 0 1 7.5 2.5C19.5 15.4 12 20 12 20Z"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24"><path d="M12 4v12M6.5 11 12 16.5 17.5 11M5 20h14"/></symbol>
+  <symbol id="i-back" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M7.5 4.5v15M16.5 4.5v15M3.5 9h4M3.5 15h4M16.5 9h4M16.5 15h4"/></symbol>
+  <symbol id="i-ext" viewBox="0 0 24 24"><path d="M14 4.5h5.5V10M19.5 4.5 11 13M17 14v4.5a1 1 0 0 1-1 1H5.5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1H10"/></symbol>
+</svg>
+
+<header class="top">
+  <div class="top-in wrap">
+    <a class="brand" href="#/foryou" aria-label="Movies, picks for you">
+      <svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-film"/></svg>
+      <span>Movies</span>
+    </a>
+    <form class="search" id="search-form" role="search">
+      <svg class="ico" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="search" type="search" placeholder="Search a film" autocomplete="off" aria-label="Search a film">
+    </form>
+    <button class="icon-btn" id="open-settings" type="button" aria-label="Settings">
+      <svg class="ico" aria-hidden="true"><use href="#i-gear"/></svg>
+    </button>
+  </div>
+  <nav class="tabs wrap" aria-label="Sections">
+    <a href="#/foryou" data-tab="foryou">For you</a>
+    <a href="#/explore" data-tab="explore">Explore</a>
+    <a href="#/watchlist" data-tab="watchlist">Watchlist <span class="count" id="count-watchlist"></span></a>
+    <a href="#/seen" data-tab="seen">Seen <span class="count" id="count-seen"></span></a>
+  </nav>
+</header>
+
+<main class="wrap" id="main">
+  <section id="view-search" class="view" hidden></section>
+
+  <section id="view-foryou" class="view" hidden>
+    <div class="loved">
+      <div class="loved-head">
+        <h2>Films you love</h2>
+        <button class="btn small" type="button" id="add-loved"><svg class="ico" aria-hidden="true"><use href="#i-plus"/></svg>Add</button>
+      </div>
+      <div class="loved-row" id="loved-row"></div>
+      <p class="hint" id="loved-hint" hidden>The more films you mark as loved, the sharper the picks. Five to ten is a good start.</p>
+    </div>
+    <div class="filters" id="picks-filters"></div>
+    <p class="result-note" id="picks-note"></p>
+    <div class="grid" id="picks-grid"></div>
+    <div class="more"><button class="btn" type="button" id="picks-more" hidden>Show more</button></div>
+  </section>
+
+  <section id="view-explore" class="view" hidden>
+    <div class="chips" id="explore-lists" role="radiogroup" aria-label="Lists"></div>
+    <div class="filters" id="explore-filters"></div>
+    <p class="result-note" id="explore-note"></p>
+    <div class="grid" id="explore-grid"></div>
+    <div class="more"><button class="btn" type="button" id="explore-more" hidden>Show more</button></div>
+  </section>
+
+  <section id="view-watchlist" class="view" hidden>
+    <div class="filters" id="watch-filters"></div>
+    <div class="grid" id="watch-grid"></div>
+  </section>
+
+  <section id="view-seen" class="view" hidden>
+    <div id="seen-groups"></div>
+  </section>
+</main>
+
+<div class="sheet" id="detail" role="dialog" aria-modal="true" aria-label="Film" hidden>
+  <div class="sheet-scrim" data-close></div>
+  <article class="sheet-body detail" id="detail-body"></article>
+</div>
+
+<div class="sheet" id="loved-sheet" role="dialog" aria-modal="true" aria-labelledby="loved-title" hidden>
+  <div class="sheet-scrim" data-close></div>
+  <div class="sheet-body panel">
+    <div class="panel-head">
+      <h2 id="loved-title">Add films you love</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <div class="seg" role="tablist">
+      <button type="button" class="on" data-pane="pick" role="tab">Tap the ones you loved</button>
+      <button type="button" data-pane="paste" role="tab">Paste a list</button>
+    </div>
+    <div class="pane" id="pane-pick">
+      <input id="loved-search" type="search" placeholder="Search a film you loved" autocomplete="off" aria-label="Search a film you loved">
+      <p class="hint">Famous, highly rated films below. Tap a poster to mark it loved; tap again to undo.</p>
+      <div class="pick-grid" id="pick-grid"></div>
+      <div class="more"><button class="btn" type="button" id="pick-more">More films</button></div>
+    </div>
+    <div class="pane" id="pane-paste" hidden>
+      <p class="hint">One film per line. Add the year if the title is common, e.g. <i>Dune 2021</i>.</p>
+      <textarea id="paste-text" rows="8" placeholder="The Prestige&#10;A Beautiful Mind&#10;Argo 2012"></textarea>
+      <button class="btn primary" type="button" id="paste-go">Find them</button>
+      <div id="paste-result"></div>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="settings" role="dialog" aria-modal="true" aria-labelledby="settings-title" hidden>
+  <div class="sheet-scrim" data-close></div>
+  <div class="sheet-body panel">
+    <div class="panel-head">
+      <h2 id="settings-title">Settings</h2>
+      <button class="icon-btn" type="button" data-close aria-label="Close"><svg class="ico" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <h3>Your streaming services</h3>
+    <p class="hint">Tick the ones you pay for. "Watch now" then means in Jellyfin or on one of these, in India.</p>
+    <div class="svc" id="svc-list"></div>
+    <h3>Catalogue</h3>
+    <dl class="status" id="status"></dl>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+</body>
+</html>

@@ -1,0 +1,46 @@
+# Movies: what to watch next. Every film with 1,000+ IMDb votes (IMDb's own
+# daily rating files, refreshed weekly), filled in through Seerr with the
+# poster, plot, tags, cast and where it streams in India. "For you" ranks films
+# like the ones marked loved, weighted by IMDb rating; "Explore" has ready-made
+# lists (IMDb Top, Hidden gems, Indian cinema, ...) and filters; every film
+# shows whether it's in Jellyfin, with a "Get it" button that requests it in
+# Seerr.
+#
+#   on the LAN:  http://192.168.0.10:8089
+#   log:         docker logs movies
+#
+# Keys in movies.env (Seerr's API key; optionally a Jellyfin key to mark played
+# films as seen). Marks, settings and the catalogue live in ./state/movies.db.
+
+services:
+  movies:
+    build: .
+    image: movies:latest
+    container_name: movies
+    restart: unless-stopped
+    user: "1000:1000"
+    ports:
+      - "8089:8089"
+    env_file: ./movies.env
+    environment:
+      - TZ=Asia/Kolkata
+      - SEERR_URL=http://192.168.0.10:5055
+      - JELLYFIN_URL=http://192.168.0.10:8096
+      # Whose Jellyfin plays count as seen (needs JELLYFIN_API_KEY in movies.env).
+      - JELLYFIN_USER=imad7x
+      # Streaming availability is for this country.
+      - REGION=IN
+      # Names (besides IPs and localhost) the page may be opened under.
+      - ALLOWED_HOSTS=
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    volumes:
+      - ./state:/state
+      # The code is mounted read-only so an edit takes effect on the next
+      # restart, like gym and plants.
+      - ./app:/app:ro
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8089/api/ping', timeout=3)"]
+      interval: 60s
+      timeout: 5s
+      retries: 3
